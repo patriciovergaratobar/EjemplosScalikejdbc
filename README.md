@@ -13,8 +13,9 @@ mysql --protocol=tcp --host=localhost --user=root --port=3306 --default-characte
 ```
 
 ## Configuración de Mysql
-Debes abrir con un editor EjemplosScalikejdbc/src/main/resources/application.conf
-Luego edita las siguientes propiedades con tu configuración de Mysql: 
+ - Debes abrir con un editor EjemplosScalikejdbc/src/main/resources/application.conf.
+
+ - Luego edita las siguientes propiedades con tu configuración de Mysql: 
 ```
 db.default.url="jdbc:mysql://localhost:3306/chucrutdb"
 db.default.user="TuUsuarioMysql"
