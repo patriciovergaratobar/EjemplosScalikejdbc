@@ -76,8 +76,18 @@ object AppClient extends App {
   usersList4 foreach println
   usersList4 foreach { us => sql"delete from user WHERE user_id = ${us.id}".update.apply() }
 
-  DBs.closeAll()
 
+  //SELECT TABLA VEHICLE
+  println("Jugando con los vehiculos...")
+  val v = VehicleModel.syntax("v")
+  val vehiclesList: List[VehicleModel] = withSQL { select.from(VehicleModel as v) }.map(VehicleModel(v.resultName)).list.apply()
+  vehiclesList foreach println
+
+  //Join entre user y vehicle
+  //.......?
+
+
+  DBs.closeAll()
 }
 
 // Modelo de datos que representan la tabla user
@@ -116,5 +126,30 @@ object UserModel extends SQLSyntaxSupport[UserModel] {
     rs.nString(u.mail), rs.nString(u.phono), rs.nString(u.perfil)
   )
 
+}
+
+// Modelo de datos que representan la tabla vehicle
+case class VehicleModel(vehicleId: Int, plate: String, imeiGps: String, lastLongitud: Double, lastLatitude: Double, userId: Int)
+object VehicleModel extends SQLSyntaxSupport[VehicleModel] {
+
+  override val tableName = "vehicle"
+  override val columns = Seq( "vehicle_id","plate", "imei_gps", "last_longitud", "last_latitude", "user_user_id")
+
+  override val nameConverters = Map(
+    "^vehicleId$" -> "vehicle_id",
+    "^imeiGps$" -> "imei_gps",
+    "^lastLongitud$" -> "last_longitud",
+    "^lastLatitude$" -> "last_latitude",
+    "^userId$" -> "user_user_id"
+  )
+
+  def apply(v: ResultName[VehicleModel])(rs: WrappedResultSet) = new VehicleModel(
+    rs.int(v.vehicleId),
+    rs.nString(v.plate),
+    rs.nString(v.imeiGps),
+    rs.double(v.lastLongitud),
+    rs.double(v.lastLatitude),
+    rs.int(v.userId)
+  )
 
 }
